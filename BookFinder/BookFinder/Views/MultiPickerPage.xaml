@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<pages:PopupPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BookFinder.Views.MultiPickerPage"
+             xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+             xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+             xmlns:local="clr-namespace:BookFinder"
+             xmlns:prism="http://prismlibrary.com"
+                 Background="white"
+                 NavigationPage.HasNavigationBar="False"
+                 Padding="100"
+             prism:ViewModelLocator.AutowireViewModel="True"
+             >
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="1.2"
+            ScaleOut="0.8"
+            DurationIn="400"
+            DurationOut="300"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            
+            HasBackgroundAnimation="True"/>
+    </pages:PopupPage.Animation>
+
+    <StackLayout>
+        <ListView x:Name="listView"
+                  ItemsSource="{Binding ListModel}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                            <Label Text="{Binding Text}" VerticalOptions="Center" HorizontalOptions="StartAndExpand"/>
+                            <CheckBox IsChecked="{Binding IsChecked}" HorizontalOptions="EndAndExpand" Color="Black"/>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <StackLayout Orientation="Horizontal">
+            
+        <Button Text="Cancel" Command="{Binding CommandClosePopup}" HorizontalOptions="CenterAndExpand" WidthRequest="100" VerticalOptions="CenterAndExpand"/>
+
+        <Button Text="Done" Command="{Binding CommandClosePopup}" HorizontalOptions="CenterAndExpand" WidthRequest="100" VerticalOptions="CenterAndExpand"/>
+        </StackLayout>
+    </StackLayout>
+
+</pages:PopupPage>

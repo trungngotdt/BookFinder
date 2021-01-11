@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="BookFinder.Views.MainPage"
+             xmlns:i="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
+             Title="{Binding Title}">
+    <Grid>
+        <Grid.Style>
+            <Style TargetType="Grid">
+                <Style.Triggers>
+                    <DataTrigger TargetType="Grid" Binding="{Binding IsWaiting}" Value="True">
+                        <Setter Property="BackgroundColor" Value="Silver"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Grid" Binding="{Binding IsWaiting}" Value="False">
+                        <Setter Property="BackgroundColor" Value="Default"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Grid" Binding="{Binding IsWaiting}" Value="True">
+                        <Setter Property="IsEnabled" Value="False"/>
+                    </DataTrigger>
+                    <DataTrigger TargetType="Grid" Binding="{Binding IsWaiting}" Value="False">
+                        <Setter Property="IsEnabled" Value="True"/>
+                    </DataTrigger>
+
+                </Style.Triggers>
+            </Style>
+        </Grid.Style>
+        <ActivityIndicator IsRunning="{Binding IsWaiting}"
+                           VerticalOptions="CenterAndExpand"
+                           IsVisible="{Binding IsWaiting}"
+                           IsEnabled="{Binding IsWaiting}"/>
+        <StackLayout  VerticalOptions="StartAndExpand">
+            <StackLayout Margin="25,0,25,0">
+                <Editor x:Name="searchStr" VerticalOptions="Fill"/>
+                <Button  Text="Search" 
+                         Command="{Binding CommandSearchTapped}"
+                         CommandParameter="{Binding Source={x:Reference searchStr},Path=Text}"></Button>
+            </StackLayout>
+            <StackLayout Margin="25,0,25,0">
+                <Label Text="What is library you want?" />
+                <Editor Text="{Binding NameOfLibrary}"
+                        Placeholder="Please choose">
+                    <Editor.Behaviors>
+                        <i:EventToCommandBehavior EventName="Focused"
+                                                  Command="{Binding CommandOpenMultiPicker}"/>
+                    </Editor.Behaviors>
+                </Editor>
+
+
+            </StackLayout>
+            <Label />
+            <Label />
+            <ListView HasUnevenRows="True"
+                      ItemsSource="{Binding Books}"
+                      x:Name="ListBooks"
+                      SeparatorVisibility="Default">
+                <ListView.Behaviors>
+                    <i:EventToCommandBehavior EventName="ItemTapped"
+                                          Command="{Binding CommandItemTapped}"
+                                          CommandParameter="{Binding Source={x:Reference ListBooks},Path=SelectedItem.Value}"/>
+                </ListView.Behaviors>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextCell Text="{Binding Value.Title}">
+
+                        </TextCell>
+
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
+    </Grid>
+
+
+</ContentPage>
