@@ -10,14 +10,28 @@ using BookFinder.Models;
 
 namespace BookFinder.Modules.Genesis
 {
-    public class LibraryGenesisService:ILibrary
+    public class LibraryGenesisService : ILibrary
     {
         public LibraryGenesisService()
         {
 
         }
+        public  bool CanNext(HtmlDocument htmlDoc, int CurrentPage)
+        {
+            var startPage = CurrentPage - 3 > 1 ? CurrentPage - 3 : 1;
+            var pageInfo = htmlDoc.DocumentNode.Descendants("table").ElementAt(1).Descendants("font").ElementAt(0);
+            var datas = pageInfo.InnerText.Split(' ');
+            var length = datas.Length;
+            var totalItem = int.Parse(datas[0]);
 
-        public async Task<Dictionary<string, Book>> SearchBooks(string search)
+            if (totalItem - CurrentPage * 25 > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<List<Book>> SearchBooks(string search,int page)
         {
             var handler = new HttpClientHandler()
             {
@@ -27,29 +41,31 @@ namespace BookFinder.Modules.Genesis
             {
                 try
                 {
-                    var list = new Dictionary<string, Book>();
+                    var list = new List< Book>();
 
-
-                    HttpResponseMessage response = await client.GetAsync(EndPoint.urlGenesisSearch + search);
+                    var url = EndPoint.urlGenesisSearch.Replace("$search", search).Replace("$page", page.ToString());
+                    HttpResponseMessage response = await client.GetAsync(url);
                     var html = await response.Content.ReadAsStringAsync();
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(html);
-                    var tableBooks = htmlDoc.DocumentNode.Descendants("table").FirstOrDefault(node => node.GetAttributeValue("class", "").Equals("c"));
-                    var books = tableBooks.Descendants("tr").Skip(1).ToArray();
-                   
-                    var length = books.Length;
-                    for (int i = 0; i < length; i++)
+                    if (CanNext(htmlDoc,page))
                     {
-                        var node = books[i].Descendants("td").ToArray();
-                        var idBook = node[0].InnerText;
-                        var nodeBook = htmlDoc.GetElementbyId(idBook);
-                        var link = nodeBook.GetAttributeValue("href", "");
-                        var title = WebUtility.HtmlDecode(nodeBook.InnerText);
-                        list.Add(idBook, new Book(idBook,title, link));
-                        
+                        var tableBooks = htmlDoc.DocumentNode.Descendants("table").FirstOrDefault(node => node.GetAttributeValue("class", "").Equals("c"));
+                        var books = tableBooks.Descendants("tr").Skip(1).ToArray();
+                        var length = books.Length;
+                        for (int i = 0; i < length; i++)
+                        {
+                            var node = books[i].Descendants("td").ToArray();
+                            var idBook = node[0].InnerText;
+                            var nodeBook = htmlDoc.GetElementbyId(idBook);
+                            var link = nodeBook.GetAttributeValue("href", "");
+                            var title = WebUtility.HtmlDecode(nodeBook.InnerText);
+                            list.Add(new Book(idBook, title, link));
+                        }
+                        return list;
                     }
-                    //.ElementAt(0).InnerText;
-                    return list;
+                    return new List<Book>();
+                   
                 }
                 catch (Exception ex)
                 {

@@ -25,7 +25,6 @@ namespace BookFinder.ViewModels
         private void OnLoad()
         {
             var libraryNames = typeof(LibraryName).GetEnumValues();
-            var length = libraryNames.Length;
             foreach (var item in libraryNames)
             {
 

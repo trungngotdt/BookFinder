@@ -4,7 +4,7 @@
              x:Class="BookFinder.Views.MainPage"
              xmlns:i="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
              Title="{Binding Title}">
-    <Grid>
+    <Grid >
         <Grid.Style>
             <Style TargetType="Grid">
                 <Style.Triggers>
@@ -28,47 +28,52 @@
                            VerticalOptions="CenterAndExpand"
                            IsVisible="{Binding IsWaiting}"
                            IsEnabled="{Binding IsWaiting}"/>
-        <StackLayout  VerticalOptions="StartAndExpand">
-            <StackLayout Margin="25,0,25,0">
-                <Editor x:Name="searchStr" VerticalOptions="Fill"/>
-                <Button  Text="Search" 
-                         Command="{Binding CommandSearchTapped}"
-                         CommandParameter="{Binding Source={x:Reference searchStr},Path=Text}"></Button>
-            </StackLayout>
-            <StackLayout Margin="25,0,25,0">
-                <Label Text="What is library you want?" />
-                <Editor Text="{Binding NameOfLibrary}"
-                        Placeholder="Please choose">
-                    <Editor.Behaviors>
-                        <i:EventToCommandBehavior EventName="Focused"
+        <Grid>
+            <StackLayout  VerticalOptions="StartAndExpand">
+
+                <StackLayout Margin="25,0,25,0">
+
+                    <Editor x:Name="searchStr"
+                                Placeholder="Your keywords"
+                                VerticalOptions="Fill"
+                                Text="{Binding SearchStr}"/>
+                    <Label Text="What is library you want?" />
+                    <Editor Text="{Binding NameOfLibrary}"
+                                Placeholder="Please choose">
+                        <Editor.Behaviors>
+                            <i:EventToCommandBehavior EventName="Focused"
                                                   Command="{Binding CommandOpenMultiPicker}"/>
-                    </Editor.Behaviors>
-                </Editor>
+                        </Editor.Behaviors>
+                    </Editor>
 
-
+                </StackLayout>
+                <StackLayout Margin="25,0,25,0">
+                    <Button  Text="Search"                                 
+                                 Command="{Binding CommandSearchTapped}"></Button>
+                </StackLayout>
+                <Label />
+                <Label />
+                <ScrollView >
+                    <ListView HasUnevenRows="True" 
+                                  ItemsSource="{Binding Books}"
+                                  x:Name="ListBooks" 
+                                  SeparatorVisibility="Default">
+                        <ListView.Behaviors>
+                            <i:EventToCommandBehavior EventName="ItemTapped" 
+                                                          Command="{Binding CommandItemTapped}"
+                                                          CommandParameter="{Binding Source={x:Reference ListBooks},Path=SelectedItem.Value}"/>
+                            <i:EventToCommandBehavior EventName="ItemAppearing"
+                                                          Command="{Binding CommandInfiniteLoad}"
+                                                          EventArgsParameterPath="ItemIndex"/>
+                        </ListView.Behaviors>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextCell Text="{Binding Title}"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </ScrollView>
             </StackLayout>
-            <Label />
-            <Label />
-            <ListView HasUnevenRows="True"
-                      ItemsSource="{Binding Books}"
-                      x:Name="ListBooks"
-                      SeparatorVisibility="Default">
-                <ListView.Behaviors>
-                    <i:EventToCommandBehavior EventName="ItemTapped"
-                                          Command="{Binding CommandItemTapped}"
-                                          CommandParameter="{Binding Source={x:Reference ListBooks},Path=SelectedItem.Value}"/>
-                </ListView.Behaviors>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <TextCell Text="{Binding Value.Title}">
-
-                        </TextCell>
-
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
-        </StackLayout>
+        </Grid>
     </Grid>
-
-
 </ContentPage>

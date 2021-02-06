@@ -1,4 +1,5 @@
 ﻿using BookFinder.Modules.Genesis;
+using BookFinder.Modules.Gutenberg;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -9,7 +10,8 @@ namespace BookFinder.Modules
     {
         private static LibraryRepository instance = null;
         private static readonly object padlock = new object();
-
+        private LibraryGenesisService genesisService=new LibraryGenesisService();
+        private LibraryGutenbergService gutenbergService = new LibraryGutenbergService();
         private LibraryRepository()
         {
 
@@ -38,7 +40,11 @@ namespace BookFinder.Modules
             switch (library)
             {
                 case LibraryName.Genesis:
-                    return new LibraryGenesisService();
+                    return genesisService;
+                case LibraryName.ZLibrary:
+                    return null;
+                case LibraryName.Gutenberg:
+                    return gutenbergService;
                 default:
                     throw new NotImplementedException();
             }
@@ -50,5 +56,9 @@ namespace BookFinder.Modules
     {
        // All,
         Genesis,
+        ZLibrary,
+        Gutenberg,
+        //https://www.allabout-engineering.com/
+
     }
 }

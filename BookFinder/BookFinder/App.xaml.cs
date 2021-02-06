@@ -32,6 +32,7 @@ namespace BookFinder
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<MultiPickerPage, MultiPickerViewModel>("PopupMultiPicker");
+            containerRegistry.RegisterForNavigation<BookPage, BookPageViewModel>();
         }
     }
 }

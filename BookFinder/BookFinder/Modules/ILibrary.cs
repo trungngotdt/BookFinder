@@ -1,4 +1,5 @@
 ﻿using BookFinder.Models;
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,6 +9,7 @@ namespace BookFinder.Modules
 {
     public interface ILibrary
     {
-        Task<Dictionary<string, Book>> SearchBooks(string search);
+        bool CanNext(HtmlDocument htmlDoc, int CurrentPage);
+        Task<List<Book>> SearchBooks(string search,int page);
     }
 }
