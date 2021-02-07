@@ -11,5 +11,6 @@ namespace BookFinder.Modules
     {
         bool CanNext(HtmlDocument htmlDoc, int CurrentPage);
         Task<List<Book>> SearchBooks(string search,int page);
+        Task<Dictionary<string, string>> GetDownloadLinkAsync(string id);
     }
 }

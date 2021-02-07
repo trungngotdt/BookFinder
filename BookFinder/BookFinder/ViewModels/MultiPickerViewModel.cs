@@ -15,8 +15,8 @@ namespace BookFinder.ViewModels
     public class MultiPickerViewModel: ViewModelBase
     {
         private List<Model> listModel;
-        private DelegateCommand commandClosePopup;
-        private DelegateCommand commandCancelPopup;
+        private readonly DelegateCommand commandClosePopup;
+        private readonly DelegateCommand commandCancelPopup;
         public MultiPickerViewModel(INavigationService navigationService) : base(navigationService)
         {
             listModel = new List<Model>();

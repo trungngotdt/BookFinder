@@ -16,12 +16,10 @@ namespace BookFinder.Modules.Genesis
         {
 
         }
-        public  bool CanNext(HtmlDocument htmlDoc, int CurrentPage)
+        public bool CanNext(HtmlDocument htmlDoc, int CurrentPage)
         {
-            var startPage = CurrentPage - 3 > 1 ? CurrentPage - 3 : 1;
             var pageInfo = htmlDoc.DocumentNode.Descendants("table").ElementAt(1).Descendants("font").ElementAt(0);
             var datas = pageInfo.InnerText.Split(' ');
-            var length = datas.Length;
             var totalItem = int.Parse(datas[0]);
 
             if (totalItem - CurrentPage * 25 > 0)
@@ -31,7 +29,12 @@ namespace BookFinder.Modules.Genesis
             return false;
         }
 
-        public async Task<List<Book>> SearchBooks(string search,int page)
+        public async Task<Dictionary<string, string>> GetDownloadLinkAsync(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<Book>> SearchBooks(string search, int page)
         {
             var handler = new HttpClientHandler()
             {
@@ -41,31 +44,54 @@ namespace BookFinder.Modules.Genesis
             {
                 try
                 {
-                    var list = new List< Book>();
+                    var list = new List<Book>();
 
                     var url = EndPoint.urlGenesisSearch.Replace("$search", search).Replace("$page", page.ToString());
                     HttpResponseMessage response = await client.GetAsync(url);
                     var html = await response.Content.ReadAsStringAsync();
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(html);
-                    if (CanNext(htmlDoc,page))
+                    if (CanNext(htmlDoc, page))
                     {
-                        var tableBooks = htmlDoc.DocumentNode.Descendants("table").FirstOrDefault(node => node.GetAttributeValue("class", "").Equals("c"));
-                        var books = tableBooks.Descendants("tr").Skip(1).ToArray();
+                        var books = htmlDoc.DocumentNode.Descendants("table").Where(node => node.GetAttributeValue("rules", "").Equals("cols")).ToArray();
                         var length = books.Length;
-                        for (int i = 0; i < length; i++)
+                        for (int i = 0; i < length; i += 2)
                         {
-                            var node = books[i].Descendants("td").ToArray();
-                            var idBook = node[0].InnerText;
-                            var nodeBook = htmlDoc.GetElementbyId(idBook);
-                            var link = nodeBook.GetAttributeValue("href", "");
-                            var title = WebUtility.HtmlDecode(nodeBook.InnerText);
-                            list.Add(new Book(idBook, title, link));
+                            string image = "";
+                            string link = "";
+                            string idBook = "";
+                            string title = "";
+                            string author = "";
+                            var node = books[i];
+                            var titleNode = node.Descendants("td").FirstOrDefault(x => x.GetAttributeValue("colspan", "").Equals("2"));
+                            if (!(titleNode is null))
+                            {
+                                var archor = titleNode.Descendants("a").ElementAt(0);
+                                title = WebUtility.HtmlDecode(archor.InnerText);
+                                link = WebUtility.HtmlDecode(archor.GetAttributeValue("href", "").Remove(0, 2));
+                                
+                            }
+                            var idBookNode = node.Descendants("tr").ElementAt(7);
+                            if(!(idBookNode is null))
+                            {
+                                idBook =WebUtility.HtmlDecode( idBookNode.Descendants("td").ElementAt(3).InnerText);
+                            }
+                            var imageNode = node.Descendants("img").ElementAt(0);
+                            if (!(imageNode is null))
+                            {
+                                image = WebUtility.HtmlDecode(imageNode.GetAttributeValue("src", ""));
+                            }
+                            var authorNode = node.Descendants("td").FirstOrDefault(x => x.GetAttributeValue("colspan", "").Equals("3"));
+                            if (!(authorNode is null))
+                            {
+                                author = WebUtility.HtmlDecode(authorNode.Descendants("a").ElementAt(0).InnerText);
+                            }
+                            list.Add(new Book(idBook, title, link, image, LibraryName.Genesis, author));
                         }
                         return list;
                     }
                     return new List<Book>();
-                   
+
                 }
                 catch (Exception ex)
                 {

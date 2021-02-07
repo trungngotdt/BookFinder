@@ -10,8 +10,8 @@ namespace BookFinder.Modules
     {
         private static LibraryRepository instance = null;
         private static readonly object padlock = new object();
-        private LibraryGenesisService genesisService=new LibraryGenesisService();
-        private LibraryGutenbergService gutenbergService = new LibraryGutenbergService();
+        private readonly LibraryGenesisService genesisService=new LibraryGenesisService();
+        private readonly LibraryGutenbergService gutenbergService = new LibraryGutenbergService();
         private LibraryRepository()
         {
 
@@ -59,6 +59,6 @@ namespace BookFinder.Modules
         ZLibrary,
         Gutenberg,
         //https://www.allabout-engineering.com/
-
+        //https://www.epub.vn/
     }
 }

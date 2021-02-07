@@ -21,7 +21,7 @@ namespace BookFinder.ViewModels
     public class MainPageViewModel : ViewModelBase
     {
         private readonly DelegateCommand<Book> commandItemTapped;
-        private IPageDialogService dialogService;
+        private readonly IPageDialogService dialogService;
         private readonly DelegateCommand commandSearchTapped;
         private readonly DelegateCommand commandOpenMultiPicker;
         private string nameOfLibrary;
@@ -82,7 +82,12 @@ namespace BookFinder.ViewModels
         {
             try
             {
-                await Browser.OpenAsync(book.GetLink(), BrowserLaunchMode.SystemPreferred);
+                var param = new Prism.Navigation.NavigationParameters
+                {
+                    { "book", book }
+                };
+                await NavigationService.NavigateAsync("BookPage", param);
+                //await Browser.OpenAsync(book.GetLink(), BrowserLaunchMode.SystemPreferred);
             }
             catch (Exception ex)
             {
@@ -117,7 +122,7 @@ namespace BookFinder.ViewModels
             {
                 booksRawData.AddRange(data);
             }
-            booksRawData.Sort();
+            booksRawData = booksRawData.OrderBy(x => x.Title).ToList();
             var lengthRawData = booksRawData.Count;
             for (int i = 0; i < lengthRawData; i++)
             {
@@ -133,15 +138,17 @@ namespace BookFinder.ViewModels
         {
             try
             {
+                IsWaiting = true;
                 if (String.IsNullOrWhiteSpace(SearchStr))
                 {
                     throw new Exception("Empty search string");
                 }
-                IsWaiting = true;
+
                 if (String.IsNullOrWhiteSpace(NameOfLibrary))
                 {
                     throw new Exception("Empty search source");
                 }
+                Books.Clear();
                 currentPage = 1;
                 var data = await CombineBookDataSync();
                 lengthBooks = data.Count();

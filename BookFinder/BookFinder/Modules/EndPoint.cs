@@ -7,7 +7,7 @@ namespace BookFinder.Modules
     public class EndPoint
     {
         public const string urlGenesis= "http://libgen.rs";
-        public const string urlGenesisSearch = urlGenesis + "/search.php?req=$search&sortmode=ASC&page=$page";
+        public const string urlGenesisSearch = urlGenesis + "/search.php?req=$search&view=detailed&sortmode=ASC&page=$page";
 
         public const string urlGutenberg = "http://www.gutenberg.org";
 

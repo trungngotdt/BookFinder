@@ -67,8 +67,8 @@
                                                           EventArgsParameterPath="ItemIndex"/>
                         </ListView.Behaviors>
                         <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <TextCell Text="{Binding Title}"/>
+                            <DataTemplate >
+                                <ImageCell Text="{Binding Title}" ImageSource="{Binding Image}" Detail="{Binding Source}"/>
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
