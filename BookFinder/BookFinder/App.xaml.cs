@@ -20,7 +20,7 @@ namespace BookFinder
         {
             InitializeComponent();
 
-            await NavigationService.NavigateAsync("NavigationPage/BookPage");
+            await NavigationService.NavigateAsync("NavigationPage/MainPage");
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)

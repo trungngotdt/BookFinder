@@ -4,7 +4,8 @@
              xmlns:prism="http://prismlibrary.com"
              prism:ViewModelLocator.AutowireViewModel="True"
              x:Class="BookFinder.Views.BookPage">
-    <StackLayout>
+    <ScrollView>
+           <StackLayout>
         <Label HorizontalOptions="CenterAndExpand" FontSize="Title" Text="A book from" Margin="25,25,25,25"/>
         <Image Source="https://libgen.is/covers/3000/06e6135019c8f2f43158aba9abdc610e-d.jpg"/>
         <Label Text="A Label can transform the casing of its text, stored in the Text property, by setting the TextTransform property to a value of the TextTransform enumeration. This enumeration has four values:"
@@ -26,5 +27,8 @@
                 <Button Text="Download"/>
             </Grid>
         </Grid>
+            <Button Text="Open in browser"></Button>
     </StackLayout>
+    </ScrollView>
+ 
 </ContentPage>

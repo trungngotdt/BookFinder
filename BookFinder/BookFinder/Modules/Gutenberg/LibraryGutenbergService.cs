@@ -23,7 +23,7 @@ namespace BookFinder.Modules.Gutenberg
         public async Task<Dictionary<string, string>> GetDownloadLinkAsync(string id)
         {
             var dic = new Dictionary<string, string>();
-            var api= RestService.For<IAPILibrary>(EndPoint.urlGutenberg);
+            var api= RestService.For<IAPILibrary>(EndPoint.urlGutenbergDex);
             var obj =await api.GetGuntenbergBook(id);
             var results = (obj["results"] as JArray);
             if(results.Count > 0)
@@ -89,7 +89,6 @@ namespace BookFinder.Modules.Gutenberg
                                 author = WebUtility.HtmlDecode(authorNode.InnerText);
                             }
                             idBook = link.Replace("/ebooks/", "");
-
                             list.Add(new Book(idBook, title, link, image, LibraryName.Gutenberg,author));
                         }
                         return list;
