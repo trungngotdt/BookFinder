@@ -44,6 +44,7 @@ namespace BookFinder.ViewModels
                     switch (book.Library)
                     {
                         case LibraryName.Genesis:
+                            keyValues = await genesisService.GetDownloadLinkAsync(Book.MD5);
                             break;
                         case LibraryName.ZLibrary:
                             break;

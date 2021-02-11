@@ -61,7 +61,7 @@
                         <ListView.Behaviors>
                             <i:EventToCommandBehavior EventName="ItemTapped" 
                                                           Command="{Binding CommandItemTapped}"
-                                                          CommandParameter="{Binding Source={x:Reference ListBooks},Path=SelectedItem.Value}"/>
+                                                          CommandParameter="{Binding Source={x:Reference ListBooks},Path=SelectedItem}"/>
                             <i:EventToCommandBehavior EventName="ItemAppearing"
                                                           Command="{Binding CommandInfiniteLoad}"
                                                           EventArgsParameterPath="ItemIndex"/>

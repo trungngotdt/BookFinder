@@ -8,6 +8,7 @@ namespace BookFinder.Modules
     {
         public const string urlGenesis= "http://libgen.rs";
         public const string urlGenesisSearch = urlGenesis + "/search.php?req=$search&view=detailed&sortmode=ASC&page=$page";
+        public const string urlGenesisBook = urlGenesis + "/book/index.php?md5=$id";
 
         public const string urlGutenberg = "http://www.gutenberg.org";
         public const string urlGutenbergDex = "https://gutendex.com";

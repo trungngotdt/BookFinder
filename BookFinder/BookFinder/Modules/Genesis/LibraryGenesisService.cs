@@ -31,7 +31,49 @@ namespace BookFinder.Modules.Genesis
 
         public async Task<Dictionary<string, string>> GetDownloadLinkAsync(string id)
         {
-            throw new NotImplementedException();
+            var dic = new Dictionary<string, string>();
+            var handler = new HttpClientHandler()
+            {
+                AllowAutoRedirect = false
+            };
+            using (var client = new HttpClient(handler))
+            {
+                try
+                {
+                    
+                    var url = EndPoint.urlGenesisBook.Replace("$id", id);
+                    HttpResponseMessage response = await client.GetAsync(url);
+                    var html = await response.Content.ReadAsStringAsync();
+                    var htmlDoc = new HtmlDocument();
+                    htmlDoc.LoadHtml(html);
+                    var linkRaws = htmlDoc.DocumentNode.SelectNodes("/body/table/tbody/tr[18]/td[2]/table/tbody/tr");
+                    if(linkRaws is not null)
+                    {
+                        if (linkRaws.Any())
+                        {
+                            var links = linkRaws.ElementAt(0).Descendants("a").ToArray();
+                            if (links.Any())
+                            {
+                                var lengthLinks = links.Count();
+                                for (int i = 0; i < lengthLinks; i++)
+                                {
+                                    var link = links[i];
+                                    var name = link.GetAttributeValue("title", "");
+                                    var directLink = link.GetAttributeValue("href", "");
+                                    dic.Add(name, directLink);
+                                }
+                            }
+                        }
+                    }
+                   
+                    return dic;
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
+            }
+            //throw new NotImplementedException();
         }
 
         public async Task<List<Book>> SearchBooks(string search, int page)
@@ -62,6 +104,7 @@ namespace BookFinder.Modules.Genesis
                             string idBook = "";
                             string title = "";
                             string author = "";
+                            string md5 = "";
                             var node = books[i];
                             var titleNode = node.Descendants("td").FirstOrDefault(x => x.GetAttributeValue("colspan", "").Equals("2"));
                             if (!(titleNode is null))
@@ -69,12 +112,12 @@ namespace BookFinder.Modules.Genesis
                                 var archor = titleNode.Descendants("a").ElementAt(0);
                                 title = WebUtility.HtmlDecode(archor.InnerText);
                                 link = WebUtility.HtmlDecode(archor.GetAttributeValue("href", "").Remove(0, 2));
-                                
+                                md5 = link.Replace("/book/index.php?md5=", "");
                             }
                             var idBookNode = node.Descendants("tr").ElementAt(7);
-                            if(!(idBookNode is null))
+                            if (!(idBookNode is null))
                             {
-                                idBook =WebUtility.HtmlDecode( idBookNode.Descendants("td").ElementAt(3).InnerText);
+                                idBook = WebUtility.HtmlDecode(idBookNode.Descendants("td").ElementAt(3).InnerText);
                             }
                             var imageNode = node.Descendants("img").ElementAt(0);
                             if (!(imageNode is null))
@@ -86,7 +129,7 @@ namespace BookFinder.Modules.Genesis
                             {
                                 author = WebUtility.HtmlDecode(authorNode.Descendants("a").ElementAt(0).InnerText);
                             }
-                            list.Add(new Book(idBook, title, link, image, LibraryName.Genesis, author));
+                            list.Add(new Book(idBook, title, link, image, LibraryName.Genesis, author,md5));
                         }
                         return list;
                     }
