@@ -2,33 +2,119 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="http://prismlibrary.com"
+             xmlns:i="clr-namespace:Prism.Behaviors;assembly=Prism.Forms"
              prism:ViewModelLocator.AutowireViewModel="True"
+             x:Name="ContentBook"
+             Title="{Binding Title}"
+             xmlns:sk="clr-namespace:Xamarin.Forms.Skeleton;assembly=Xamarin.Forms.Skeleton"
              x:Class="BookFinder.Views.BookPage">
-    <ScrollView>
-           <StackLayout>
-        <Label HorizontalOptions="CenterAndExpand" FontSize="Title" Text="A book from" Margin="25,25,25,25"/>
-        <Image Source="https://libgen.is/covers/3000/06e6135019c8f2f43158aba9abdc610e-d.jpg"/>
-        <Label Text="A Label can transform the casing of its text, stored in the Text property, by setting the TextTransform property to a value of the TextTransform enumeration. This enumeration has four values:"
-               LineBreakMode="WordWrap"
-               TextTransform="Uppercase"
-               HorizontalTextAlignment="Center"
-               HorizontalOptions="CenterAndExpand"/>
-        <Label Text="Author" HorizontalOptions="CenterAndExpand"/>
+    <ContentPage.Style>
+        <Style TargetType="ContentPage">
+            <Style.Triggers>
+                <DataTrigger TargetType="ContentPage" Binding="{Binding IsWaiting}" Value="True">
+                    <Setter Property="BackgroundColor" Value="Silver"/>
+                </DataTrigger>
+                <DataTrigger TargetType="ContentPage" Binding="{Binding IsWaiting}" Value="False">
+                    <Setter Property="BackgroundColor" Value="Default"/>
+                </DataTrigger>
+                <DataTrigger TargetType="ContentPage" Binding="{Binding IsWaiting}" Value="True">
+                    <Setter Property="IsEnabled" Value="False"/>
+                </DataTrigger>
+                <DataTrigger TargetType="ContentPage" Binding="{Binding IsWaiting}" Value="False">
+                    <Setter Property="IsEnabled" Value="True"/>
+                </DataTrigger>
 
+            </Style.Triggers>
+        </Style>
+    </ContentPage.Style>
+    <ScrollView>
         <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="7*"/>
-                <ColumnDefinition Width="3*"/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
-                <Picker Title="Source"/>
-            </Grid>
-            <Grid Grid.Column="1">
-                <Button Text="Download"/>
-            </Grid>
+            <ActivityIndicator IsRunning="{Binding IsWaiting}"
+                               VerticalOptions="CenterAndExpand"
+                               IsVisible="{Binding IsWaiting}"
+                               IsEnabled="{Binding IsWaiting}"/>
+            <StackLayout>
+
+                <Label HorizontalOptions="CenterAndExpand"
+                       FontSize="Title"
+                       Text="{Binding Book.Library}"
+                       Margin="25,25,25,25"
+                       sk:Skeleton.IsBusy="{Binding IsWaiting}"
+	                   sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+                       sk:Skeleton.BackgroundColor="#363636"/>
+                <Image Source="{Binding Book.Image}"
+                       sk:Skeleton.IsBusy="{Binding IsWaiting}"
+	                   sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+                       sk:Skeleton.BackgroundColor="#363636">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Style.Triggers>
+                                <DataTrigger TargetType="Image" Binding="{Binding IsWaiting}" Value="True">
+                                    <Setter Property="IsVisible" Value="False"/>
+                                </DataTrigger>
+                                <DataTrigger TargetType="Image" Binding="{Binding IsWaiting}" Value="False">
+                                    <Setter Property="IsVisible" Value="True"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+                <Grid IsVisible="{Binding IsWaiting}"
+                       sk:Skeleton.IsBusy="{Binding IsWaiting}"
+	                   sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+                       sk:Skeleton.BackgroundColor="#363636"
+                      HorizontalOptions="CenterAndExpand">
+                    <Label Text="{Binding Book.Title}"
+                       LineBreakMode="WordWrap"
+                       TextTransform="Uppercase"
+                       HorizontalTextAlignment="Center"
+                       HorizontalOptions="CenterAndExpand"
+                       sk:Skeleton.IsBusy="{Binding IsWaiting}"
+	                   sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+                       sk:Skeleton.BackgroundColor="#363636"/>
+                </Grid>
+                <Label Text="{Binding Book.Title}"
+                       LineBreakMode="WordWrap"
+                       TextTransform="Uppercase"
+                       HorizontalTextAlignment="Center"
+                       HorizontalOptions="CenterAndExpand"
+                       sk:Skeleton.IsBusy="{Binding IsWaiting}"
+	                   sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+                       sk:Skeleton.BackgroundColor="#363636"/>
+                <Label Text="{Binding Book.Author}"
+                       HorizontalOptions="CenterAndExpand"
+                       sk:Skeleton.IsBusy="{Binding IsWaiting}"
+	                   sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+                       sk:Skeleton.BackgroundColor="#363636"/>
+
+                <Grid sk:Skeleton.IsBusy="{Binding IsWaiting}"
+	                   sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+                      sk:Skeleton.BackgroundColor="#363636">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="7*"/>
+                        <ColumnDefinition Width="3*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0">
+                        <Picker Title="Source" 
+                                x:Name="Source"
+                                ItemsSource="{Binding SourceLinkList}"
+                                ItemDisplayBinding="{Binding Key}"/>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Button Text="Open" 
+                                Command="{Binding CommandOpenItem}"
+                                CommandParameter="{Binding Source={x:Reference Source},Path=SelectedItem.Value}"/>
+                    </Grid>
+                </Grid>
+                <Button Text="Open in browser"
+                        Command="{Binding CommandOpenInBrowser}"
+                        sk:Skeleton.IsBusy="{Binding IsWaiting}"
+                        sk:Skeleton.Animation="{sk:DefaultAnimation Fade}"
+                        sk:Skeleton.BackgroundColor="#363636"></Button>
+              
+            </StackLayout>
         </Grid>
-            <Button Text="Open in browser"></Button>
-    </StackLayout>
+
     </ScrollView>
- 
+
 </ContentPage>

@@ -21,31 +21,28 @@ namespace BookFinder.ViewModels
     public class MainPageViewModel : ViewModelBase
     {
         private readonly DelegateCommand<Book> commandItemTapped;
-        private readonly IPageDialogService dialogService;
         private readonly DelegateCommand commandSearchTapped;
         private readonly DelegateCommand commandOpenMultiPicker;
         private string nameOfLibrary;
         private ILibrary genesisService;
         private ILibrary gutenbergService;
         private ObservableCollection<Book> books;
-        private bool isWaiting;
         private int lengthBooks;
         private string searchStr;
         private readonly DelegateCommand<object> commandInfiniteLoad;
         private int currentPage;
         public MainPageViewModel(INavigationService navigationService, IPageDialogService _dialogService)
-            : base(navigationService)
+            : base(navigationService, _dialogService)
         {
 
-            Title = "Main Page";
-            this.dialogService = _dialogService;
+            Title = "Book Finder";
             OnLoad();
         }
         public DelegateCommand CommandSearchTapped { get => commandSearchTapped ?? new DelegateCommand(async () => { await SearchLibrary(); }); }
         public ObservableCollection<Book> Books { get => books; set { books = value; RaisePropertyChanged("Books"); } }
 
         public DelegateCommand<Book> CommandItemTapped { get => commandItemTapped ?? new DelegateCommand<Book>(async (item) => { await ItemTapped(item); }); }
-        public bool IsWaiting { get => isWaiting; set { isWaiting = value; RaisePropertyChanged("IsWaiting"); } }
+        
 
         public DelegateCommand CommandOpenMultiPicker { get => commandOpenMultiPicker ?? new DelegateCommand(async () => { await OpenPopupMultiPicker(); }); }
 
@@ -87,11 +84,10 @@ namespace BookFinder.ViewModels
                     { "book", book }
                 };
                 await NavigationService.NavigateAsync("BookPage", param);
-                //await Browser.OpenAsync(book.GetLink(), BrowserLaunchMode.SystemPreferred);
             }
             catch (Exception ex)
             {
-                await dialogService.DisplayAlertAsync("Alert", ex.Message, "OK");
+                await DialogService.DisplayAlertAsync("Alert", ex.Message, "OK");
 
             }
 
@@ -156,7 +152,7 @@ namespace BookFinder.ViewModels
             catch (Exception ex)
             {
                 IsWaiting = false;
-                await dialogService.DisplayAlertAsync("Alert", ex.Message, "OK");
+                await DialogService.DisplayAlertAsync("Alert", ex.Message, "OK");
             }
             finally
             {

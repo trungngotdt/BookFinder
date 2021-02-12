@@ -40,32 +40,35 @@ namespace BookFinder.Modules.Genesis
             {
                 try
                 {
-                    
+
                     var url = EndPoint.urlGenesisBook.Replace("$id", id);
                     HttpResponseMessage response = await client.GetAsync(url);
                     var html = await response.Content.ReadAsStringAsync();
                     var htmlDoc = new HtmlDocument();
                     htmlDoc.LoadHtml(html);
-                    var linkRaws = htmlDoc.DocumentNode.SelectNodes("/body/table/tbody/tr[18]/td[2]/table/tbody/tr");
-                    if(linkRaws is not null)
+                    var linkRaws = htmlDoc.DocumentNode.SelectSingleNode("/html[1]/body[1]/body[1]/table[1]/tr[18]/td[2]/table[1]/tr[1]");
+                    if (linkRaws is not null)
                     {
-                        if (linkRaws.Any())
+                        var links = linkRaws.Descendants("a").ToArray();
+                        if (links.Any())
                         {
-                            var links = linkRaws.ElementAt(0).Descendants("a").ToArray();
-                            if (links.Any())
+                            var lengthLinks = links.Count();
+                            for (int i = 0; i < lengthLinks; i++)
                             {
-                                var lengthLinks = links.Count();
-                                for (int i = 0; i < lengthLinks; i++)
+                                var link = links[i];
+                                var name = link.GetAttributeValue("title",String.Empty);
+                                
+                                var directLink = link.GetAttributeValue("href", String.Empty);
+                                if(String.IsNullOrEmpty(name))
                                 {
-                                    var link = links[i];
-                                    var name = link.GetAttributeValue("title", "");
-                                    var directLink = link.GetAttributeValue("href", "");
-                                    dic.Add(name, directLink);
+                                    name = link.InnerHtml.Replace("<br>", " ");
                                 }
+                                dic.Add(name, directLink);
                             }
                         }
+
                     }
-                   
+
                     return dic;
                 }
                 catch (Exception ex)
@@ -129,7 +132,7 @@ namespace BookFinder.Modules.Genesis
                             {
                                 author = WebUtility.HtmlDecode(authorNode.Descendants("a").ElementAt(0).InnerText);
                             }
-                            list.Add(new Book(idBook, title, link, image, LibraryName.Genesis, author,md5));
+                            list.Add(new Book(idBook, title, link, image, LibraryName.Genesis, author, md5));
                         }
                         return list;
                     }

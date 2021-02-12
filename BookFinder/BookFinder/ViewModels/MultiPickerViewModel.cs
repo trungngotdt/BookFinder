@@ -3,6 +3,7 @@ using BookFinder.Modules;
 using BookFinder.ViewModels;
 using Prism.Commands;
 using Prism.Navigation;
+using Prism.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +18,12 @@ namespace BookFinder.ViewModels
         private List<Model> listModel;
         private readonly DelegateCommand commandClosePopup;
         private readonly DelegateCommand commandCancelPopup;
-        public MultiPickerViewModel(INavigationService navigationService) : base(navigationService)
+
+        public MultiPickerViewModel(INavigationService navigationService, IPageDialogService _dialogService) : base(navigationService, _dialogService)
         {
             listModel = new List<Model>();
-            
         }
+
         private void OnLoad()
         {
             var libraryNames = typeof(LibraryName).GetEnumValues();
