@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace BookFinder.Modules.Gutenberg
 {
-    public class LibraryGutenbergService : ILibrary
+    public class LibraryGutenbergService : ILibraryService
     {
         public bool CanNext(HtmlDocument htmlDoc, int CurrentPage)
         {

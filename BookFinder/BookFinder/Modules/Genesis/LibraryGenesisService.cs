@@ -10,7 +10,7 @@ using BookFinder.Models;
 
 namespace BookFinder.Modules.Genesis
 {
-    public class LibraryGenesisService : ILibrary
+    public class LibraryGenesisService : ILibraryService
     {
         public LibraryGenesisService()
         {

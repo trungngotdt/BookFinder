@@ -15,8 +15,8 @@ namespace BookFinder.ViewModels
 {
     public class BookPageViewModel : ViewModelBase
     {
-        private ILibrary genesisService;
-        private ILibrary gutenbergService;
+        private ILibraryService genesisService;
+        private ILibraryService gutenbergService;
         private Book book;
         private Dictionary<string, string> sourceLink;
         private readonly DelegateCommand<object> commandOpenItem;
@@ -66,8 +66,8 @@ namespace BookFinder.ViewModels
         public override void Initialize(INavigationParameters parameters)
         {
             base.Initialize(parameters);
-            gutenbergService = LibraryRepository.Instance.GetLibrary(LibraryName.Gutenberg);
-            genesisService = LibraryRepository.Instance.GetLibrary(LibraryName.Genesis);
+            gutenbergService = LibraryServiceFactory.Instance.GetLibrary(LibraryName.Gutenberg);
+            genesisService = LibraryServiceFactory.Instance.GetLibrary(LibraryName.Genesis);
 
             MessagingCenter.Subscribe<object, Dictionary<string, string>>(this, "GetDownloadLink", (obj, result) =>
              {

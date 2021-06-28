@@ -24,8 +24,8 @@ namespace BookFinder.ViewModels
         private readonly DelegateCommand commandSearchTapped;
         private readonly DelegateCommand commandOpenMultiPicker;
         private string nameOfLibrary;
-        private ILibrary genesisService;
-        private ILibrary gutenbergService;
+        private ILibraryService genesisService;
+        private ILibraryService gutenbergService;
         private ObservableCollection<Book> books;
         private int lengthBooks;
         private string searchStr;
@@ -102,7 +102,7 @@ namespace BookFinder.ViewModels
                 {
                     LibraryName source = (LibraryName)Enum.Parse(typeof(LibraryName), x, true);
                     var index = Array.IndexOf(sources, x);
-                    var service = LibraryRepository.Instance.GetLibrary(source);
+                    var service = LibraryServiceFactory.Instance.GetLibrary(source);
                     listTask.Add(service.SearchBooks(SearchStr, currentPage));
                 }
             }
@@ -165,8 +165,8 @@ namespace BookFinder.ViewModels
             books = new ObservableCollection<Book>();
             NameOfLibrary = "";
             SearchStr = "";
-            gutenbergService = LibraryRepository.Instance.GetLibrary(LibraryName.Gutenberg);
-            genesisService = LibraryRepository.Instance.GetLibrary(LibraryName.Genesis);
+            gutenbergService = LibraryServiceFactory.Instance.GetLibrary(LibraryName.Gutenberg);
+            genesisService = LibraryServiceFactory.Instance.GetLibrary(LibraryName.Genesis);
         }
         public override void Initialize(INavigationParameters parameters)
         {

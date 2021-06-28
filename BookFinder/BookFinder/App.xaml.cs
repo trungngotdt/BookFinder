@@ -1,5 +1,6 @@
 using BookFinder.ViewModels;
 using BookFinder.Views;
+using BookFinder.Views.BookViews;
 using Prism;
 using Prism.Ioc;
 using Prism.Plugin.Popups;
@@ -32,7 +33,8 @@ namespace BookFinder
             containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<MainPage, MainPageViewModel>();
             containerRegistry.RegisterForNavigation<MultiPickerPage, MultiPickerViewModel>("PopupMultiPicker");
-            containerRegistry.RegisterForNavigation<BookPage, BookPageViewModel>();
+            containerRegistry.RegisterForNavigation<GutenbergPage, BookPageViewModel>();
+            containerRegistry.RegisterForNavigation<GenesisPage, BookPageViewModel>();
         }
     }
 }

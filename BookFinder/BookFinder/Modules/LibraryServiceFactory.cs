@@ -6,18 +6,18 @@ using System.Text;
 
 namespace BookFinder.Modules
 {
-    public class LibraryRepository
+    public class LibraryServiceFactory
     {
-        private static LibraryRepository instance = null;
+        private static LibraryServiceFactory instance = null;
         private static readonly object padlock = new object();
         private readonly LibraryGenesisService genesisService=new LibraryGenesisService();
         private readonly LibraryGutenbergService gutenbergService = new LibraryGutenbergService();
-        private LibraryRepository()
+        private LibraryServiceFactory()
         {
 
         }
 
-        public static LibraryRepository Instance
+        public static LibraryServiceFactory Instance
         {
             get
             {
@@ -27,7 +27,7 @@ namespace BookFinder.Modules
                     {
                         if (instance == null)
                         {
-                            instance = new LibraryRepository();
+                            instance = new LibraryServiceFactory();
                         }
                     }
                 }
@@ -35,7 +35,7 @@ namespace BookFinder.Modules
             }
         }
 
-        public ILibrary GetLibrary(LibraryName library)
+        public ILibraryService GetLibrary(LibraryName library)
         {
             switch (library)
             {

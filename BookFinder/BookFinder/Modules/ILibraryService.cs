@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BookFinder.Modules
 {
-    public interface ILibrary
+    public interface ILibraryService
     {
         bool CanNext(HtmlDocument htmlDoc, int CurrentPage);
         Task<List<Book>> SearchBooks(string search,int page);
